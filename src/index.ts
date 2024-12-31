@@ -7,25 +7,21 @@ export default {
 
 			switch (method) {
 				case 'GET':
-					// 查询单个客户或所有客户
 					if (customerId) {
 						return await this.getCustomer(customerId, env);
 					}
 					return await this.getAllCustomers(env);
 
 				case 'POST':
-					// 创建新的客户
 					return await this.addCustomer(request, env);
 
 				case 'PUT':
-					// 更新客户数据
 					if (!customerId) {
 						return new Response('Customer ID is required for update', { status: 400 });
 					}
 					return await this.updateCustomer(customerId, request, env);
 
 				case 'DELETE':
-					// 删除客户数据
 					if (!customerId) {
 						return new Response('Customer ID is required for deletion', { status: 400 });
 					}
@@ -34,11 +30,9 @@ export default {
 				default:
 					return new Response('Method Not Allowed', { status: 405 });
 			}
-		// 默认响应
 		return new Response('Welcome to the API. Use /api/customers to manage customers.', { status: 200 });
 	},
 
-	// 获取单个客户信息
 	async getCustomer(customerId, env) {
 		try {
 			const { results } = await env.DB.prepare(
@@ -46,7 +40,7 @@ export default {
 			).bind(customerId).all();
 
 			if (results.length > 0) {
-				return Response.json(results[0]); // 返回单个客户的结果
+				return Response.json(results[0]);
 			} else {
 				return new Response('Customer not found', { status: 404 });
 			}
@@ -61,7 +55,7 @@ export default {
 				"SELECT * FROM Customers"
 			).all();
 
-			return Response.json(results); // 返回所有客户数据
+			return Response.json(results); 
 		} catch (err) {
 			return new Response('Error fetching customers', { status: 500 });
 		}
@@ -106,10 +100,8 @@ export default {
 		}
 	},
 
-	// 删除客户信息
 	async deleteCustomer(customerId, env) {
 		try {
-			// 删除客户数据
 			const { changes } = await env.DB.prepare(
 				"DELETE FROM Customers WHERE id = ?"
 			).bind(customerId).run();
